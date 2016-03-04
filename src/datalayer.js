@@ -4,6 +4,12 @@
     .module('datalayerModule', [])
     .factory('datalayer', datalayer);
 
+  // @TODO [ ] Make $http call from config json
+  // @TODO [ ] Set default request for each method
+  // @TODO [ ] Change Api method find to query
+  // @TODO [ ] Implement Resource.all
+  // @TODO [ ] Resource.get support for array of ids
+  // @TODO [ ] Add on readme a paragraph explaining that the library is expecting a json from the api or ajax calls
   function datalayer($rootScope, $http, $q) {
     // pub sub implementation
     var topics = {},
@@ -15,7 +21,13 @@
         url: './',
         model: '',
         version: 'v1',
-        id_reference: 'id'
+        id_reference: 'id',
+        request: {
+          find: {},
+          get: {},
+          delete: {},
+          $save: {}
+        }
       };
 
       angular.extend(config, configuration || {});
@@ -28,6 +40,7 @@
         $save: function() {
           var defer = $q.defer();
           var self = this;
+
           if (!this[config.id_reference]) {
 
             $http.post(config.url + config.version + '/' + config.model, this)

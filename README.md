@@ -1,11 +1,10 @@
 # Datalayer
-Datalayer is a simple AngularJS service abstraction to consume data from a
-RESTful Api.
+Datalayer is a simple AngularJS service abstraction to consume data from a RESTful Api.
 The code base is very simple to change and adapt to your backend in case it doesnt support RESTful.
 
 ## Install
 You can download it by:
-* Using npm and running `npm run datalayer`
+* Using npm and running `npm install datalayer`
 * Download manually and include the `<script type="text/javascript" src="./dist/datalayer.min.js">`
 
 ## Usage
@@ -30,17 +29,18 @@ Returns the class `Resource` with the default actions attached
 
 #### Resource.find
 **Params:** <object> ex: `{ age: { $gt: 15 } }`
-
 **Returns:** <array> Resource
 
 #### Resource.get
 **Params:** <object> ex: `{ id: <number> }`
-
 **Returns:** <object> ex: `{ name: 'John', age: '28' }``
+
+#### Resource.all
+**Params:** none
+**Returns:** <array> Resource
 
 #### Resource.delete
 **Params:** <object> ex: `{ id: <number> }`
-
 **Returns:** null
 
 ## Starter guide
@@ -85,6 +85,7 @@ User.delete({ id: 20 });  // delete
 ```
 
 ## Using events
+@ TODO
 
 ## Modify
 If your backend don't support RESTful you can easily alter the ajax call to
