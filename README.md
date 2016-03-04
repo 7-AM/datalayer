@@ -19,20 +19,19 @@ You can download it by:
 
 ### Returns `<class>` Resource
 Returns the class `Resource` with the default actions attached
-`Resource.find`
 
+#### Resource.find
 * Params: <object> ex: `{ age: { $gt: 15 } }`
 * Returns a array of Resource class
 
-`Resource.get`
-
+#### Resource.get
 * Params: <object> ex: `{ id: <number> }`
 * Returns a object
 
-`Resource.delete`
-
+#### Resource.delete
 * Params: <object> ex: `{ id: <number> }`
 * Returns true/false
+
 
 ## Starter guide
 ```javascript
