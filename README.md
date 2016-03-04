@@ -13,32 +13,35 @@ You can download it by:
 
 ### Arguments
 * **url:** Base url point to API
-  * Default: `./`
-  * Required: `false`
+  * `Default`: ./
+  * `Required`: false
 * **model:** Represents the resource of the api
-  * Default: null
-  * Required: true
+  * `Default`: null
+  * `Required`: true
 * **version:** The version of the API
-  * Default: `v1`
-  * Required: false
+  * `Default`: v1
+  * `Required`: false
 * **id_reference:** Which field represents the unique identifier
-  * Default: `id`
-  * Required: false
+  * `Default`: id
+  * `Required`: false
 
 ### Returns `<class>` Resource
 Returns the class `Resource` with the default actions attached
 
 #### Resource.find
-* **Params:** <object> ex: `{ age: { $gt: 15 } }`
-* **Returns:** <array> Resource
+**Params:** <object> ex: `{ age: { $gt: 15 } }`
+
+**Returns:** <array> Resource
 
 #### Resource.get
-* **Params:** <object> ex: `{ id: <number> }`
-* **Returns:** <object> ex: `{ name: 'John', age: '28' }``
+**Params:** <object> ex: `{ id: <number> }`
+
+**Returns:** <object> ex: `{ name: 'John', age: '28' }``
 
 #### Resource.delete
-* **Params:** <object> ex: `{ id: <number> }`
-* **Returns:** null
+**Params:** <object> ex: `{ id: <number> }`
+
+**Returns:** null
 
 ## Starter guide
 ```javascript
