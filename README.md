@@ -15,12 +15,15 @@ You can download it by:
 1. **url:** Base url point to API
 ..* Default: `./`
 ..* Required: `false`
+
 2. **model:** Represents the resource of the api
 ..* Default: null
 ..* Required: true
+
 3. **version:** The version of the API
 ..* Default: `v1`
 ..* Required: false
+
 4. **id_reference:** Which field represents the unique identifier
 ..* Default: `id`
 ..* Required: false
