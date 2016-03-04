@@ -13,20 +13,20 @@ You can download it by:
 
 ### Arguments
 1. **url:** Base url point to API
-..* Default: `./`
-..* Required: `false`
+  * Default: `./`
+  * Required: `false`
 
 2. **model:** Represents the resource of the api
-..* Default: null
-..* Required: true
+  * Default: null
+  * Required: true
 
 3. **version:** The version of the API
-..* Default: `v1`
-..* Required: false
+  * Default: `v1`
+  * Required: false
 
 4. **id_reference:** Which field represents the unique identifier
-..* Default: `id`
-..* Required: false
+  * Default: `id`
+  * Required: false
 
 ### Returns `<class>` Resource
 Returns the class `Resource` with the default actions attached
