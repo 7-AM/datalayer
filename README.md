@@ -21,17 +21,16 @@ You can download it by:
 Returns the class `Resource` with the default actions attached
 
 #### Resource.find
-* Params: <object> ex: `{ age: { $gt: 15 } }`
-* Returns a array of Resource class
+**Params:** <object> ex: `{ age: { $gt: 15 } }`
+**Returns:** <array> Resource
 
 #### Resource.get
-* Params: <object> ex: `{ id: <number> }`
-* Returns a object
+**Params:** <object> ex: `{ id: <number> }`
+**Returns:** <object> ex: `{ name: 'John', age: '28' }``
 
 #### Resource.delete
-* Params: <object> ex: `{ id: <number> }`
-* Returns true/false
-
+**Params:** <object> ex: `{ id: <number> }`
+**Returns:** null
 
 ## Starter guide
 ```javascript
