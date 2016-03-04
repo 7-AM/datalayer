@@ -13,25 +13,25 @@ You can download it by:
 
 ### Arguments
 * url
-.. Base url point to API
+...Base url point to API
 * model
-.. Represents the resource of the api
+...Represents the resource of the api
 * version
-.. The version of the API
+...The version of the API
 * id_reference
-.. Which field represents the unique identifier
+...Which field represents the unique identifier
 
 ### Returns <object> Resource
 Returns the class `Resource` with the deafult actions attached
 * `Resource.find`
-.. Params: <object> ex: `{ age: { $gt: 15 } }`
+...Params: <object> ex: `{ age: { $gt: 15 } }`
 .. Returns a array of Resource class
 * `Resource.get`
-.. Params: <object> ex: `{ id: <number> }`
-.. Returns a object
+...Params: <object> ex: `{ id: <number> }`
+...Returns a object
 * `Resource.delete`
-.. Params: <object> ex: `{ id: <number> }`
-.. Returns true/false
+...Params: <object> ex: `{ id: <number> }`
+...Returns true/false
 
 ## Starter guide
 ```javascript
