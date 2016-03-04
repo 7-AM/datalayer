@@ -45,28 +45,50 @@ Returns the class `Resource` with the default actions attached
 
 ## Starter guide
 ```javascript
-var Task = datalayer({ model: 'task'});
-var User = datalayer({ model: 'user' });
-
-var cleaning = new Task();
-var alex = new User();
-var john = new User();
-
-john.name = 'John something';
-john.email = 'john@dummy.com'
-john.age = '27';
-
-john.$save();
-
+angular.module('app', ['datalayerModule'])
+.controller('Controller', function (datalayer) {
+  var User = datalayer({ model: 'users' });
+});
 ```
 
 ## Code examples
+```javascript
+var User = datalayer({ model: 'users' });
+
+var john = new User();
+var carlos = User.get({ id: 10 });
+
+john.name = 'John';
+john.surname = 'Howard';
+john.age = '28';
+
+carlos.age = 29;
+
+john.$save();   // insert
+carlos.$save(); // update
+
+User.find()
+  .then(function (users) {
+    for (var i = 0, len = users.length; i < len; i++) {
+      if (users[i].age > 70) {
+        users[i].status = 'inactive';
+      }
+
+      users[i].$save();   // update
+    }
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+
+User.delete({ id: 20 });  // delete
+```
 
 ## Using events
 
 ## Modify
 If your backend don't support RESTful you can easily alter the ajax call to
-better fit your use cases.
+better fit your use case.
 
 ```javascript
 function datalayer($rootScope, $http, $q) {
