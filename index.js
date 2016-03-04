@@ -1,2 +1,2 @@
-require('./dist/datalayer.js');
+require('./dist/datalayer');
 module.exports = 'datalayerModule';

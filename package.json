@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "uglifyjs ./src/datalayer.js -o ./dist/datalayer.min.js -c"
+    "mv:src": "cp ./src/datalayer.js ./dist/",
+    "build:js": "uglifyjs ./src/datalayer.js -o ./dist/datalayer.min.js -c",
+    "build": "npm run mv:src & npm run build:js"
   },
   "repository": {
     "type": "git",
