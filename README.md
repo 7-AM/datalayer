@@ -12,19 +12,16 @@ You can download it by:
 `datalayer({ url: '<string>', model: '<string>', version: '<sctring>', id_reference: '<string>' })`
 
 ### Arguments
-1. **url:** Base url point to API
+* **url:** Base url point to API
   * Default: `./`
   * Required: `false`
-
-2. **model:** Represents the resource of the api
+* **model:** Represents the resource of the api
   * Default: null
   * Required: true
-
-3. **version:** The version of the API
+* **version:** The version of the API
   * Default: `v1`
   * Required: false
-
-4. **id_reference:** Which field represents the unique identifier
+* **id_reference:** Which field represents the unique identifier
   * Default: `id`
   * Required: false
 
@@ -32,19 +29,16 @@ You can download it by:
 Returns the class `Resource` with the default actions attached
 
 #### Resource.find
-**Params:** <object> ex: `{ age: { $gt: 15 } }`
-
-**Returns:** <array> Resource
+* **Params:** <object> ex: `{ age: { $gt: 15 } }`
+* **Returns:** <array> Resource
 
 #### Resource.get
-**Params:** <object> ex: `{ id: <number> }`
-
-**Returns:** <object> ex: `{ name: 'John', age: '28' }``
+* **Params:** <object> ex: `{ id: <number> }`
+* **Returns:** <object> ex: `{ name: 'John', age: '28' }``
 
 #### Resource.delete
-**Params:** <object> ex: `{ id: <number> }`
-
-**Returns:** null
+* **Params:** <object> ex: `{ id: <number> }`
+* **Returns:** null
 
 ## Starter guide
 ```javascript
