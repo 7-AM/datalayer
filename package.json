@@ -1,0 +1,25 @@
+{
+  "name": "datalayer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "uglifyjs ./src/datalayer.js -o ./dist/datalayer.min.js -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fredybawa/datalayer.git"
+  },
+  "keywords": [
+    "angularjs"
+  ],
+  "author": "Alfredo Jorge Monteiro",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fredybawa/datalayer/issues"
+  },
+  "homepage": "https://github.com/fredybawa/datalayer#readme",
+  "devDependencies": {
+    "uglify-js": "^2.6.2"
+  }
+}
