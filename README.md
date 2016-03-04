@@ -20,12 +20,17 @@ You can download it by:
 ### Returns `<class>` Resource
 Returns the class `Resource` with the default actions attached
 `Resource.find`
+
 * Params: <object> ex: `{ age: { $gt: 15 } }`
 * Returns a array of Resource class
+
 `Resource.get`
+
 * Params: <object> ex: `{ id: <number> }`
 * Returns a object
+
 `Resource.delete`
+
 * Params: <object> ex: `{ id: <number> }`
 * Returns true/false
 
