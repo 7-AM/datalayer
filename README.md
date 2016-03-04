@@ -5,7 +5,7 @@ The code base is very simple to change and adapt to your backend in case it does
 ## Install
 You can download it by:
 * Using npm and running `npm install datalayer`
-* Download manually and include the `<script type="text/javascript" src="./dist/datalayer.min.js">`
+* Download manually and include the `<script type="text/javascript" src="./path/to/your/datalayer.min.js">`
 
 ## Usage
 `datalayer({ url: '<string>', model: '<string>', version: '<sctring>', id_reference: '<string>' })`
@@ -29,18 +29,22 @@ Returns the class `Resource` with the default actions attached
 
 #### Resource.find
 **Params:** <object> ex: `{ age: { $gt: 15 } }`
+
 **Returns:** <array> Resource
 
 #### Resource.get
 **Params:** <object> ex: `{ id: <number> }`
-**Returns:** <object> ex: `{ name: 'John', age: '28' }``
+
+**Returns:** <object> ex: `{ name: 'John', age: '28' }`
 
 #### Resource.all
 **Params:** none
+
 **Returns:** <array> Resource
 
 #### Resource.delete
 **Params:** <object> ex: `{ id: <number> }`
+
 **Returns:** null
 
 ## Starter guide
