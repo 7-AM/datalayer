@@ -4,10 +4,10 @@
     .module('datalayerModule', [])
     .factory('datalayer', datalayer);
 
-  // @TODO [ ] Make $http call from config json
-  // @TODO [ ] Set default request for each method
-  // @TODO [ ] Change Api method find to query
-  // @TODO [ ] Implement Resource.all
+  // @TODO [X] Make $http call from config json
+  // @TODO [X] Set default request for each method
+  // @TODO [X] Change Api method find to query
+  // @TODO [X] Implement Resource.all
   // @TODO [ ] Resource.get support for array of ids
   // @TODO [ ] Add on readme a paragraph explaining that the library is expecting a json from the api or ajax calls
   function datalayer($rootScope, $http, $q) {
@@ -18,15 +18,36 @@
     function ResourceFactory(configuration) {
 
       var config = {
-        url: './',
+        url: '.',
         model: '',
         version: 'v1',
         id_reference: 'id',
         request: {
-          find: {},
-          get: {},
-          delete: {},
-          $save: {}
+          query: {
+            url: config.url + '/' + config.version + '/' + config.model,
+            method: 'GET',
+            params: ''
+          },
+          get: {
+            url: config.url + '/' + config.version + '/' + config.model,
+            method: 'GET'
+          },
+          all: {
+            url: config.url + '/' + config.version + '/' + config.model,
+            method: 'GET'
+          },
+          $save: {
+            url: config.url + '/' + config.version + '/' + config.model,
+            method: 'POST'
+          },
+          $update: {
+            url: config.url + '/' + config.version + '/' + config.model,
+            method: 'PUT'
+          },
+          delete: {
+            url: config.url + '/' + config.version + '/' + config.model,
+            method: 'DELETE'
+          }
         }
       };
 
@@ -42,8 +63,10 @@
           var self = this;
 
           if (!this[config.id_reference]) {
+            config.request.$save.data = this;
 
-            $http.post(config.url + config.version + '/' + config.model, this)
+            // $http.post(config.url + config.version + '/' + config.model, this)
+            $http( config.request.$save )
               .then(function(result) {
                 self.id = result.data;
 
@@ -60,8 +83,10 @@
 
           }
           else {
+            config.request.$update.data = this;
 
-            $http.put(config.url + config.version + '/' + config.model + '/' + this.id, this)
+            // $http.put(config.url + config.version + '/' + config.model + '/' + this.id, this)
+            $http( config.request.$update )
               .then(function(data) {
                 Resource.$trigger('dl-save', self);
                 Resource.$trigger('dl-' + config.model + '.save', self);
@@ -79,18 +104,26 @@
         }
       };
 
-      Resource.find = function(filter) {
+      Resource.query = function(filter, config) {
         var defer = $q.defer();
         var data = {
           objects: [],
           totalCount: 0
         };
 
-        $http.get(config.url + config.version + '/' + config.model + '/find', {
-            params: {
-              query: JSON.stringify(filter)
-            }
-          })
+        if (config) {
+          angular.extend(config.request.query, config);
+        }
+        else {
+          config.request.query.params = JSON.stringify(filter);
+        }
+
+        // $http.get(config.url + config.version + '/' + config.model + '/find', {
+        //     params: {
+        //       query: JSON.stringify(filter)
+        //     }
+        //   })
+        $http( config.request.query )
           .then(function(result) {
             data.totalCount = result.data.totalCount;
 
@@ -106,14 +139,22 @@
         return defer.promise;
       };
 
-      Resource.get = function(params) {
+      Resource.get = function(params, config) {
         var defer = $q.defer();
 
         if (!params.id) {
           defer.reject('Expecting id for the operation');
         }
 
-        $http.get(config.url + config.version + '/' + config.model + '/' + params.id)
+        if (config) {
+          anguar.extend(config.request.get, config);
+        }
+        else {
+          config.request.get.url += '/' + params.id;
+        }
+
+        // $http.get(config.url + config.version + '/' + config.model + '/' + params.id)
+        $http( config.request.get )
           .then(function(result) {
 
             defer.resolve(new Resource(result.data));
@@ -125,14 +166,41 @@
         return defer.promise;
       };
 
-      Resource.delete = function(params) {
+      Resource.all = function () {
+        var defer = $q.defer();
+        var data = [];
+
+        // $http.get(config.url + config.version + '/' + config.model)
+        $http( config.request.all )
+          .then(function (result) {
+            angular.forEach(result.data, function (object) {
+              data.push( new Resource(object) );
+            });
+            defer.resolve(data);
+          }, function (error) {
+            defer.reject(error);
+          });
+
+        return defer.promise;
+      };
+
+      Resource.delete = function(params, config) {
         var defer = $q.defer();
 
-        if (!params.id) {
+        if (params && !params.id) {
           defer.reject('Expecting id for the operation');
         }
 
-        $http.delete(config.url + config.version + '/' + config.model + '/', params.id)
+        if (config) {
+          angular.extend(config.request.$delete, config);
+        }
+        else {
+          config.request.$delete.url += '/' + params.id;
+        }
+
+
+        // $http.delete(config.url + config.version + '/' + config.model + '/', params.id)
+        $http( config.request.$delete )
           .then(function(data) {
             self.publish('dl-save', self);
             self.publish('dl-' + config.model + '.delete', self);
