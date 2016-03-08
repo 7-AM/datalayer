@@ -1,2 +1,2 @@
 require('./dist/datalayer');
-module.exports = 'datalayerModule';
+module.exports = 'angular-datalayer';

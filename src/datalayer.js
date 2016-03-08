@@ -1,14 +1,9 @@
 (function() {
 
   angular
-    .module('datalayerModule', [])
+    .module('angular-datalayer', [])
     .factory('datalayer', datalayer);
 
-  // @TODO [X] Make $http call from config json
-  // @TODO [X] Set default request for each method
-  // @TODO [X] Change Api method find to query
-  // @TODO [X] Implement Resource.all
-  // @TODO [ ] Resource.get support for array of ids
   // @TODO [ ] Add on readme a paragraph explaining that the library is expecting a json from the api or ajax calls
   function datalayer($rootScope, $http, $q) {
     // pub sub implementation
@@ -53,17 +48,25 @@
       config.request.$update.url = config.url + '/' + config.version + '/' + config.model;
       config.request.delete.url = config.url + '/' + config.version + '/' + config.model;
 
+      function checkType(obj) {
+        return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
+      }
+
       function Resource(data) {
         angular.extend(this || {}, data);
       }
 
       Resource.prototype = {
-        $save: function() {
+        $save: function(conf) {
           var defer = $q.defer();
           var self = this;
 
           if (!this[config.id_reference]) {
             config.request.$save.data = this;
+
+            if (conf) {
+              angular.extend(config.request.$update, conf);
+            }
 
             $http( config.request.$save )
               .then(function(result) {
@@ -83,6 +86,11 @@
           }
           else {
             config.request.$update.data = this;
+            config.request.$update.url += '/' + this.id;
+
+            if (conf) {
+              angular.extend(config.request.$update, conf);
+            }
 
             $http( config.request.$update )
               .then(function(data) {
@@ -138,7 +146,19 @@
           defer.reject('Expecting id for the operation');
         }
 
-        if (typeof params.id === 'number') {
+        if (checkType(params.id) === 'array'){
+          angular.forEach(params.id, function (id) {
+            _config = angular.copy(config.request.get);
+            _config.url += '/' + id;
+
+            if (conf) {
+              anguar.extend(_config, conf);
+            }
+
+            promises.push( $http(_config) );
+          });
+        }
+        else {
           config.request.get.url += '/' + params.id;
 
           if (conf) {
@@ -146,15 +166,6 @@
           }
 
           promises.push( $http( config.request.get ) );
-
-        }
-        else {
-          angular.forEach(params.id, function (id) {
-            _config = config.request.get;
-            _config.url += '/' + id;
-
-            promises.push( $http(_config) );
-          });
         }
 
         $q.all(promises)
