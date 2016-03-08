@@ -16,7 +16,6 @@
       subUid = -1;
 
     function ResourceFactory(configuration) {
-
       var config = {
         url: '.',
         model: '',
@@ -24,34 +23,35 @@
         id_reference: 'id',
         request: {
           query: {
-            url: config.url + '/' + config.version + '/' + config.model,
-            method: 'GET',
-            params: ''
+            method: 'GET'
           },
           get: {
-            url: config.url + '/' + config.version + '/' + config.model,
             method: 'GET'
           },
           all: {
-            url: config.url + '/' + config.version + '/' + config.model,
             method: 'GET'
           },
           $save: {
-            url: config.url + '/' + config.version + '/' + config.model,
             method: 'POST'
           },
           $update: {
-            url: config.url + '/' + config.version + '/' + config.model,
             method: 'PUT'
           },
           delete: {
-            url: config.url + '/' + config.version + '/' + config.model,
             method: 'DELETE'
           }
         }
       };
 
       angular.extend(config, configuration || {});
+
+      // set defaults
+      config.request.query.url = config.url + '/' + config.version + '/' + config.model;
+      config.request.get.url = config.url + '/' + config.version + '/' + config.model;
+      config.request.all.url = config.url + '/' + config.version + '/' + config.model;
+      config.request.$save.url = config.url + '/' + config.version + '/' + config.model;
+      config.request.$update.url = config.url + '/' + config.version + '/' + config.model;
+      config.request.delete.url = config.url + '/' + config.version + '/' + config.model;
 
       function Resource(data) {
         angular.extend(this || {}, data);
@@ -65,7 +65,6 @@
           if (!this[config.id_reference]) {
             config.request.$save.data = this;
 
-            // $http.post(config.url + config.version + '/' + config.model, this)
             $http( config.request.$save )
               .then(function(result) {
                 self.id = result.data;
@@ -85,7 +84,6 @@
           else {
             config.request.$update.data = this;
 
-            // $http.put(config.url + config.version + '/' + config.model + '/' + this.id, this)
             $http( config.request.$update )
               .then(function(data) {
                 Resource.$trigger('dl-save', self);
@@ -104,31 +102,22 @@
         }
       };
 
-      Resource.query = function(filter, config) {
+      Resource.query = function(filter, conf) {
+
         var defer = $q.defer();
-        var data = {
-          objects: [],
-          totalCount: 0
-        };
+        var data = [];
 
-        if (config) {
-          angular.extend(config.request.query, config);
-        }
-        else {
-          config.request.query.params = JSON.stringify(filter);
+        config.request.query.params = filter;
+
+        if (conf) {
+          angular.extend(config.request.query, conf);
         }
 
-        // $http.get(config.url + config.version + '/' + config.model + '/find', {
-        //     params: {
-        //       query: JSON.stringify(filter)
-        //     }
-        //   })
         $http( config.request.query )
           .then(function(result) {
-            data.totalCount = result.data.totalCount;
 
-            angular.forEach(result.data.objects, function(object) {
-              data.objects.push(new Resource(object));
+            angular.forEach(result.data, function(object) {
+              data.push(new Resource(object));
             });
 
             defer.resolve(data);
@@ -139,38 +128,62 @@
         return defer.promise;
       };
 
-      Resource.get = function(params, config) {
+      Resource.get = function(params, conf) {
         var defer = $q.defer();
+        var promises = [];
+        var data = [];
+        var _config = {};
 
         if (!params.id) {
           defer.reject('Expecting id for the operation');
         }
 
-        if (config) {
-          anguar.extend(config.request.get, config);
+        if (typeof params.id === 'number') {
+          config.request.get.url += '/' + params.id;
+
+          if (conf) {
+            anguar.extend(config.request.get, conf);
+          }
+
+          promises.push( $http( config.request.get ) );
+
         }
         else {
-          config.request.get.url += '/' + params.id;
+          angular.forEach(params.id, function (id) {
+            _config = config.request.get;
+            _config.url += '/' + id;
+
+            promises.push( $http(_config) );
+          });
         }
 
-        // $http.get(config.url + config.version + '/' + config.model + '/' + params.id)
-        $http( config.request.get )
-          .then(function(result) {
+        $q.all(promises)
+          .then(function (results) {
+            if (results.length === 1) {
+              data = new Resource(results[0].data);
+            }
+            else {
+              angular.forEach(results, function (result) {
+                data.push(new Resource(result.data));
+              });
+            }
 
-            defer.resolve(new Resource(result.data));
-
-          }, function(error) {
+            defer.resolve(data);
+          }, function (error) {
             defer.reject(error);
           });
 
         return defer.promise;
       };
 
-      Resource.all = function () {
+      Resource.all = function (conf) {
         var defer = $q.defer();
         var data = [];
 
-        // $http.get(config.url + config.version + '/' + config.model)
+        if (conf) {
+          angular.extend(config.request.$delete, conf);
+        }
+
         $http( config.request.all )
           .then(function (result) {
             angular.forEach(result.data, function (object) {
@@ -184,20 +197,18 @@
         return defer.promise;
       };
 
-      Resource.delete = function(params, config) {
+      Resource.delete = function(params, conf) {
         var defer = $q.defer();
 
         if (params && !params.id) {
           defer.reject('Expecting id for the operation');
         }
 
-        if (config) {
-          angular.extend(config.request.$delete, config);
-        }
-        else {
-          config.request.$delete.url += '/' + params.id;
-        }
+        config.request.$delete.url += '/' + params.id;
 
+        if (conf) {
+          angular.extend(config.request.$delete, conf);
+        }
 
         // $http.delete(config.url + config.version + '/' + config.model + '/', params.id)
         $http( config.request.$delete )
