@@ -18,8 +18,7 @@
         id_reference: 'id',
         request: {
           query: {
-            method: 'GET',
-            isArray: true
+            method: 'GET'
           },
           get: {
             method: 'GET'
