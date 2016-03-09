@@ -18,8 +18,7 @@
         id_reference: 'id',
         request: {
           query: {
-            method: 'GET',
-            isArray: true
+            method: 'GET'
           },
           get: {
             method: 'GET'
@@ -111,10 +110,12 @@
         }
       };
 
-      Resource.query = function(filter, conf) {
+      Resource.query = function(filter, conf, isArray) {
 
         var defer = $q.defer();
         var data;
+
+        isArray = typeof isArray !== 'undefined' ? isArray : true;
 
         config.request.query.params = filter;
 
@@ -130,7 +131,7 @@
               });
             }
             else {
-              data = result;
+              data = result.data;
             }
 
             defer.resolve(data);
