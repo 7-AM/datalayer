@@ -13,7 +13,7 @@ You can download it by:
 ### Configuration Json
 You can in any point modify ajax calls by specifying the request attribute the desire configurations following the angularjs $http [configuration json](https://docs.angularjs.org/api/ng/service/$http#usage). Please check the documention before adding any change.
 
-```json
+```javascript
 {
   url: '.',
   model: '',
@@ -60,24 +60,24 @@ You can in any point modify ajax calls by specifying the request attribute the d
 Returns the class `Resource` with the default actions attached
 
 #### Resource.query(query, isArray = true, [config])
-**Params:** <object> query ex: `{ age: { $gt: 15 } }`  
-**Params:** <boolean> isArray [optional] default: true  
-**Params:** <object> config [optional]  
-**Returns:** <array> Resource
+**Params:** `<object>` query ex: `{ age: { $gt: 15 } }`  
+**Params:** `<boolean>` isArray [optional] default: true  
+**Params:** `<object>` config [optional]  
+**Returns:** `<array>` Resource
 
 #### Resource.get(option, [config])
-**Params:** <object> option ex: `{ id: <number> }`  
-**Params:** <object> config [optional]  
-**Returns:** <object>|<Array> Resource
+**Params:** `<object>` option ex: `{ id: <number> }`  
+**Params:** `<object>` config [optional]  
+**Returns:** `<object>`|`<Array>` Resource
 
 #### Resource.all([config])
-**Params:** <object> config [optional]  
-**Returns:** <array> Resource
+**Params:** `<object>` config [optional]  
+**Returns:** `<array>` Resource
 
 #### Resource.delete(option, [config])
-**Params:** <object> option ex: `{ id: <number> }`  
-**Params:** <object> config [optional]  
-**Returns:** null
+**Params:** `<object>` option ex: `{ id: <number> }`  
+**Params:** `<object>` config [optional]  
+**Returns:** `null`
 
 ## Starter guide
 ```javascript
@@ -170,7 +170,7 @@ lets say the api return a json not a array:
 **option 1**  
 Preserving the total
 
-```json
+```javascript
 {
  total: 150, 
  items: [{...}, {...}]
