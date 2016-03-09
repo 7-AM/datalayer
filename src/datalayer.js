@@ -18,7 +18,8 @@
         id_reference: 'id',
         request: {
           query: {
-            method: 'GET'
+            method: 'GET',
+            isArray: true
           },
           get: {
             method: 'GET'
@@ -113,7 +114,7 @@
       Resource.query = function(filter, conf) {
 
         var defer = $q.defer();
-        var data = [];
+        var data;
 
         config.request.query.params = filter;
 
@@ -123,10 +124,14 @@
 
         $http( config.request.query )
           .then(function(result) {
-
-            angular.forEach(result.data, function(object) {
-              data.push(new Resource(object));
-            });
+            if (isArray) {
+              angular.forEach(result.data, function(object) {
+                data.push(new Resource(object));
+              });
+            }
+            else {
+              data = result;
+            }
 
             defer.resolve(data);
           }, function(error) {
