@@ -110,7 +110,7 @@
         }
       };
 
-      Resource.query = function(filter, conf, isArray) {
+      Resource.query = function(filter, isArray, conf) {
 
         var defer = $q.defer();
         var data;
