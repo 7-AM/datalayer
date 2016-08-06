@@ -75,7 +75,7 @@
                 Resource.$trigger('dl-save', self);
                 Resource.$trigger('dl-' + config.model + '.save', self);
 
-                defer.resolve('Saved sucessfully!');
+                defer.resolve(self);
               }, function(error) {
                 Resource.$trigger('dl-save', error);
                 Resource.$trigger('dl-' + config.model + '.save', error);
@@ -97,7 +97,7 @@
                 Resource.$trigger('dl-save', self);
                 Resource.$trigger('dl-' + config.model + '.save', self);
 
-                defer.resolve('updated sucessfully');
+                defer.resolve(self);
               }, function(error) {
                 Resource.$trigger('dl-save', error);
                 Resource.$trigger('dl-' + config.model + '.save', error);
