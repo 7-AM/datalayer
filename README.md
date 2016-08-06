@@ -1,10 +1,10 @@
 # Datalayer
 Datalayer is a simple AngularJS service abstraction to consume data from a RESTful Api.
-The code base is very simple to change and adapt to your backend in case it doesnt support RESTful.
+The code base is very simple to change and adapt to your backend in case it is not RESTful.
 
 ## Install
 You can download it by:
-* Using npm and running `npm install datalayer`
+* Using npm and running `npm install angular-datalayer --save`
 * Download manually and include the `<script type="text/javascript" src="./path/to/your/datalayer.min.js">`
 
 ## Starter guide
@@ -33,6 +33,38 @@ angular
 ## Usage
 `datalayer({ url: '<string>', model: '<string>', version: '<sctring>', id_reference: '<string>' })`
 
+### Configuration Json
+You can in any point modify ajax calls by specifying the request attribute the desire configurations following the angularjs $http [configuration json](https://docs.angularjs.org/api/ng/service/$http#usage). Please check the documention before adding any change.
+
+```javascript
+{
+  url: '.',
+  model: '',
+  version: 'v1',
+  id_reference: 'id',
+  request: {
+    query: {
+      method: 'GET'
+    },
+    get: {
+      method: 'GET'
+    },
+    all: {
+      method: 'GET'
+    },
+    $save: {
+      method: 'POST'
+    },
+    $update: {
+      method: 'PUT'
+    },
+    delete: {
+      method: 'DELETE'
+    }
+  }
+};
+```
+
 ### Arguments
 * **url:** Base url point to API
   * `Default`: ./
@@ -50,21 +82,26 @@ angular
 ### Returns `<class>` Resource
 Returns the class `Resource` with the default actions attached
 
-#### Resource.find
-**Params:** <object> ex: `{ age: { $gt: 15 } }`  
-**Returns:** <array> Resource
+#### Resource.query(query, isArray = true, [config])
+**Params:** `<object>` query ex: `{ age: { $gt: 15 } }`  
+**Params:** `<boolean>` isArray [optional] default: true  
+**Params:** `<object>` config [optional]  
+**Returns:** `<array>` Resource
 
-#### Resource.get
-**Params:** <object> ex: `{ id: <number> }`  
-**Returns:** <object> ex: `{ name: 'John', age: '28' }`
+#### Resource.get(option, [config])
+**Params:** `<object>` option ex: `{ id: <number> }`  
+**Params:** `<object>` config [optional]  
+**Returns:** `<object>`|`<Array>` Resource
 
-#### Resource.all
-**Params:** none  
-**Returns:** <array> Resource
+#### Resource.all([config])
+**Params:** `<object>` config [optional]  
+**Returns:** `<array>` Resource
 
-#### Resource.delete
-**Params:** <object> ex: `{ id: <number> }`  
-**Returns:** null
+#### Resource.delete(option, [config])
+**Params:** `<object>` option ex: `{ id: <number> }`  
+**Params:** `<object>` config [optional]  
+**Returns:** `null`
+
 
 ## Code examples
 ```javascript
@@ -99,7 +136,18 @@ carlos
     ...
   });
 
-User.find()
+User.get({ id: [10, 11, 12] })
+.then(function (users){
+ for (var i = 0, len = users.length; i < len; i++) {
+  if (users[i].gender === 'male') {
+   users[i].status = 'inactive';
+  }
+
+  users[i].$save();   // update
+ }
+});
+
+User.query({ gender: { $eq: 'male' } })
   .then(function (users) {
     for (var i = 0, len = users.length; i < len; i++) {
       if (users[i].age > 70) {
@@ -116,38 +164,76 @@ User.find()
 User.delete({ id: 20 });  // delete
 ```
 
-## Using events
-@ TODO
-
-## Modify
-If your backend don't support RESTful you can easily alter the ajax call to
-better fit your use case.
+### Using events
+Datalayer by default dispatch two main events, **dl-save** and **dl-[model].save**, when a save or update operation occours. We can listen to a particular model events, lets say `dl-task.save` or when a save operations happened `dl-save`.  
 
 ```javascript
-function datalayer($rootScope, $http, $q) {
+angular.moduel('app')
+.controller('Controller1', function (scope, datalayer){
+ var Task = datalayer({ model: 'task' });
+ var subscriptionId = Task.$on('dl-task.save', onSave);
 
-  Resource.find = function(filter) {
-    var defer = $q.defer();
+ function onSave(task) {
+  alert('Task ' + task.name + ' created')!
+ }
 
-    /**
-     * Add your $http call here
-     * return a promise
-     */
+ scope.$on('$destroy', function() {
+    Task.$off(subscriptionId);
+ });
+});
 
-    return defer.promise;
-  };
+angular.moduel('app')
+.controller('Controller2', function (scope, datalayer){
+ var ref = datalayer({ model: 'task' });
+ var subscriptionId = ref.$on('dl-save', onSave);
 
-  Resource.get = function () {
-    var defer = $q.defer();
+ function onSave(data) {
+  alert('Something has been saved', data);
+ }
 
-    /**
-     * Add your $http call here
-     * return a promise
-     */
+ scope.$on('$destroy', function() {
+    ref.$off(subscriptionId);
+ });
+});
+```
 
-    return defer.promise;
-  };
+### Handling Pagination
+lets say the api return a json not a array:
 
-  ...
+**option 1**  
+Preserving the total
+
+```javascript
+{
+ total: 150,
+ items: [{...}, {...}]
 }
+```
+
+```javascript
+var User = datalayer({ model: 'users' });
+
+User.query({ gender: { $eq: 'male' }, page: 1, limit: 10 }, false)
+.then(function (users){
+ for (var i = 0, len = users.items.length; i < len; i++) {
+  users.items[i] = new User(users.items[i])
+ }
+});
+```
+
+**option 2**
+Using $http transformResponse option  
+```javascript
+var User = datalayer({ model: 'users' });
+
+User.query({ gender: { $eq: 'male' }, page: 1, limit: 10 }, false, {
+ transformResponse: function (data){
+  if (data && data.items) {
+   return data.items;
+  }
+ }
+})
+.then(function (users){
+
+});
 ```
