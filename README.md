@@ -7,6 +7,29 @@ You can download it by:
 * Using npm and running `npm install datalayer`
 * Download manually and include the `<script type="text/javascript" src="./path/to/your/datalayer.min.js">`
 
+## Starter guide
+```javascript
+angular
+  .module('app', ['angular-datalayer'])
+  .controller('Controller', function (datalayer) {
+    var User = datalayer({ model: 'users' });
+  });
+```
+or
+
+```javascript
+var dataLayer = require('angular-datalayer');
+
+angular
+  .module('app', [
+    dataLayer
+  ])
+  .controller('Controller', function (datalayer) {
+
+  });
+
+```
+
 ## Usage
 `datalayer({ url: '<string>', model: '<string>', version: '<sctring>', id_reference: '<string>' })`
 
@@ -43,14 +66,6 @@ Returns the class `Resource` with the default actions attached
 **Params:** <object> ex: `{ id: <number> }`  
 **Returns:** null
 
-## Starter guide
-```javascript
-angular.module('app', ['datalayerModule'])
-.controller('Controller', function (datalayer) {
-  var User = datalayer({ model: 'users' });
-});
-```
-
 ## Code examples
 ```javascript
 var User = datalayer({ model: 'users' });
@@ -64,8 +79,25 @@ john.age = '28';
 
 carlos.age = 29;
 
-john.$save();   // insert
-carlos.$save(); // update
+john.$save()
+.then(function (data) {
+  console.log(data);
+});
+/**
+ * Will print
+ * {
+ * 	id: 1,
+ * 	name: 'John',
+ * 	surname: 'Howard',
+ * 	age: 28
+ * }
+ */
+
+carlos
+  .$save()
+  .then(function (data) {
+    ...
+  });
 
 User.find()
   .then(function (users) {
