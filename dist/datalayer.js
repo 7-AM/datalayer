@@ -65,7 +65,7 @@
             config.request.$save.data = this;
 
             if (conf) {
-              angular.extend(config.request.$update, conf);
+              angular.extend(config.request.$save, conf);
             }
 
             $http( config.request.$save )
@@ -230,13 +230,14 @@
         // $http.delete(config.url + config.version + '/' + config.model + '/', params.id)
         $http( config.request.delete )
           .then(function(data) {
-            self.publish('dl-save', self);
-            self.publish('dl-' + config.model + '.delete', self);
+            Resource.$trigger('dl-delete', data);
+            Resource.$trigger('dl-' + config.model + '.delete', data);
 
             defer.resolve(data);
           }, function(error) {
-            self.publish('dl-save', self);
-            self.publish('dl-' + config.model + '.delete', self);
+            Resource.$trigger('dl-delete', self);
+            Resource.$trigger('dl-' + config.model + '.delete', error);
+
             defer.reject(error);
           });
 
