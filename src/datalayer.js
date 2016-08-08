@@ -198,7 +198,7 @@
         var data = [];
 
         if (conf) {
-          angular.extend(config.request.$delete, conf);
+          angular.extend(config.request.all, conf);
         }
 
         $http( config.request.all )
@@ -221,14 +221,14 @@
           defer.reject('Expecting id for the operation');
         }
 
-        config.request.$delete.url += '/' + params.id;
+        config.request.delete.url += '/' + params.id;
 
         if (conf) {
-          angular.extend(config.request.$delete, conf);
+          angular.extend(config.request.delete, conf);
         }
 
         // $http.delete(config.url + config.version + '/' + config.model + '/', params.id)
-        $http( config.request.$delete )
+        $http( config.request.delete )
           .then(function(data) {
             self.publish('dl-save', self);
             self.publish('dl-' + config.model + '.delete', self);
