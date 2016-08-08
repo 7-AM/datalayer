@@ -65,7 +65,7 @@
             config.request.$save.data = this;
 
             if (conf) {
-              angular.extend(config.request.$update, conf);
+              angular.extend(config.request.$save, conf);
             }
 
             $http( config.request.$save )
