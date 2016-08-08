@@ -218,7 +218,7 @@
         var defer = $q.defer();
 
         if (params && !params.id) {
-          defer.reject('Expecting id for the operation');
+          defer.reject({error: 'Expecting id for the operation'});
         }
 
         config.request.delete.url += '/' + params.id;
