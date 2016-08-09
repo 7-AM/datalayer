@@ -4,6 +4,7 @@
     .module('angular-datalayer', [])
     .factory('datalayer', datalayer);
 
+  datalayer.$inject = ['$rootScope', '$http', '$q'];
   // @TODO [ ] Add on readme a paragraph explaining that the library is expecting a json from the api or ajax calls
   function datalayer($rootScope, $http, $q) {
     // pub sub implementation
