@@ -114,7 +114,7 @@
       Resource.query = function(filter, isArray, conf) {
 
         var defer = $q.defer();
-        var data;
+        var data = []; 
 
         isArray = typeof isArray !== 'undefined' ? isArray : true;
 
