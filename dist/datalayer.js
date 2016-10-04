@@ -60,7 +60,7 @@
       Resource.prototype = {
         $save: function(conf) {
           var defer = $q.defer();
-          var self = this;
+          var self = this, _url;
 
           if (!this[config.id_reference]) {
             config.request.$save.data = this;
@@ -86,8 +86,10 @@
 
           }
           else {
+            _url = config.request.$update.url + '/' + this.id;
+
             config.request.$update.data = this;
-            config.request.$update.url = config.request.$update.url + '/' + this.id;
+            config.request.$update.url = _url;
 
             if (conf) {
               angular.extend(config.request.$update, conf);
@@ -147,7 +149,7 @@
         var defer = $q.defer();
         var promises = [];
         var data = [];
-        var _config = {};
+        var _config = {}, _url;
 
         if (!params.id) {
           defer.reject('Expecting id for the operation');
@@ -166,7 +168,9 @@
           });
         }
         else {
-          config.request.get.url = config.request.get.url + '/' + params.id;
+          _url = config.request.get.url + '/' + params.id;
+          
+          config.request.get.url = _url;
 
           if (conf) {
             anguar.extend(config.request.get, conf);
