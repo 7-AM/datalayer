@@ -60,7 +60,7 @@
       Resource.prototype = {
         $save: function(conf) {
           var defer = $q.defer();
-          var self = this, _url;
+          var self = this, regex;
 
           if (!this[config.id_reference]) {
             config.request.$save.data = this;
@@ -86,10 +86,14 @@
 
           }
           else {
-            _url = config.request.$update.url + '/' + this.id;
+            regex = new RegExp('\/' + this.id);
 
             config.request.$update.data = this;
-            config.request.$update.url = _url;
+
+            if ( !regex.test(config.request.$update.url) ) {
+                config.request.$update.url += '/' + this.id;
+            }
+
 
             if (conf) {
               angular.extend(config.request.$update, conf);
@@ -149,7 +153,7 @@
         var defer = $q.defer();
         var promises = [];
         var data = [];
-        var _config = {}, _url;
+        var _config = {}, regex;
 
         if (!params.id) {
           defer.reject('Expecting id for the operation');
@@ -168,9 +172,12 @@
           });
         }
         else {
-          _url = config.request.get.url + '/' + params.id;
-          
-          config.request.get.url = _url;
+          regex = new RegExp('\/' + this.id);
+
+          if ( !regex.test(config.request.get.url) ) {
+            config.request.get.url += '/' + this.id;
+          }
+
 
           if (conf) {
             anguar.extend(config.request.get, conf);
