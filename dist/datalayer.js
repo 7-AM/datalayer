@@ -87,7 +87,7 @@
           }
           else {
             config.request.$update.data = this;
-            config.request.$update.url += '/' + this.id;
+            config.request.$update.url = config.request.$update.url + '/' + this.id;
 
             if (conf) {
               angular.extend(config.request.$update, conf);
@@ -114,7 +114,7 @@
       Resource.query = function(filter, isArray, conf) {
 
         var defer = $q.defer();
-        var data = []; 
+        var data = [];
 
         isArray = typeof isArray !== 'undefined' ? isArray : true;
 
@@ -166,7 +166,7 @@
           });
         }
         else {
-          config.request.get.url += '/' + params.id;
+          config.request.get.url = config.request.get.url + '/' + params.id;
 
           if (conf) {
             anguar.extend(config.request.get, conf);
