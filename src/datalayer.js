@@ -60,7 +60,7 @@
       Resource.prototype = {
         $save: function(conf) {
           var defer = $q.defer();
-          var self = this, regex;
+          var self = this, regex, url;
 
           if (!this[config.id_reference]) {
             config.request.$save.data = this;
@@ -86,12 +86,22 @@
 
           }
           else {
-            regex = new RegExp('\/' + this.id);
+            regex = new RegExp('\/[0-9]+$');
 
             config.request.$update.data = this;
 
             if ( !regex.test(config.request.$update.url) ) {
                 config.request.$update.url += '/' + this.id;
+            } else {
+
+              url = config.request.$update.url.split('/');
+
+              if (url[url.length-1] !== this.id ) {
+                url[url.length-1] = this.id;
+
+                config.request.$update.url = url.join('/');
+              }
+
             }
 
 
@@ -172,10 +182,21 @@
           });
         }
         else {
-          regex = new RegExp('\/' + this.id);
+
+          regex = new RegExp('\/[0-9]+$');
 
           if ( !regex.test(config.request.get.url) ) {
-            config.request.get.url += '/' + this.id;
+              config.request.get.url += '/' + this.id;
+          } else {
+
+            url = config.request.get.url.split('/');
+
+            if (url[url.length-1] !== this.id ) {
+              url[url.length-1] = this.id;
+
+              config.request.get.url = url.join('/');
+            }
+
           }
 
 
@@ -233,7 +254,23 @@
           defer.reject({error: 'Expecting id for the operation'});
         }
 
-        config.request.delete.url += '/' + params.id;
+        // config.request.delete.url += '/' + params.id;
+
+        regex = new RegExp('\/[0-9]+$');
+
+        if ( !regex.test(config.request.delete.url) ) {
+            config.request.delete.url += '/' + params.id;
+        } else {
+
+          url = config.request.delete.url.split('/');
+
+          if (url[url.length-1] !== params.id ) {
+            url[url.length-1] = params.id;
+
+            config.request.delete.url = url.join('/');
+          }
+
+        }
 
         if (conf) {
           angular.extend(config.request.delete, conf);
