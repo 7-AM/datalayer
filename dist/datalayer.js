@@ -186,13 +186,13 @@
           regex = new RegExp('\/[0-9]+$');
 
           if ( !regex.test(config.request.get.url) ) {
-              config.request.get.url += '/' + this.id;
+              config.request.get.url += '/' + params.id;
           } else {
 
             url = config.request.get.url.split('/');
 
-            if (url[url.length-1] !== this.id ) {
-              url[url.length-1] = this.id;
+            if (url[url.length-1] !== params.id ) {
+              url[url.length-1] = params.id;
 
               config.request.get.url = url.join('/');
             }
