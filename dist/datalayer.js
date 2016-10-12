@@ -35,6 +35,9 @@
           },
           delete: {
             method: 'DELETE'
+          },
+          update: {
+            method: 'PATCH'
           }
         }
       };
@@ -48,6 +51,7 @@
       config.request.$save.url = config.url + '/' + config.version + '/' + config.model;
       config.request.$update.url = config.url + '/' + config.version + '/' + config.model;
       config.request.delete.url = config.url + '/' + config.version + '/' + config.model;
+      config.request.update.url = config.url + '/' + config.version + '/' + config.model;
 
       function checkType(obj) {
         return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
@@ -286,6 +290,52 @@
           }, function(error) {
             Resource.$trigger('dl-delete', self);
             Resource.$trigger('dl-' + config.model + '.delete', error);
+
+            defer.reject(error);
+          });
+
+        return defer.promise;
+      };
+
+      Resource.update = function(params, conf) {
+        var defer = $q.defer();
+
+        if (params && !params.id) {
+          defer.reject({error: 'Expecting id for the operation'});
+        }
+
+        var regex = new RegExp('\/[0-9]+$');
+        var data = angular.copy(params);
+        delete data.id;
+
+        config.request.update.data = data;
+
+        if ( !regex.test(config.request.update.url) ) {
+            config.request.update.url += '/' + params.id;
+        } else {
+
+          url = config.request.update.url.split('/');
+
+          if (url[url.length-1] !== params.id ) {
+            url[url.length-1] = params.id;
+
+            config.request.update.url = url.join('/');
+          }
+        }
+
+        if (conf) {
+          angular.extend(config.request.update, conf);
+        }
+
+        $http( config.request.update )
+          .then(function(data) {
+            Resource.$trigger('dl-update', data);
+            Resource.$trigger('dl-' + config.model + '.update', data);
+
+            defer.resolve(data);
+          }, function(error) {
+            Resource.$trigger('dl-update', self);
+            Resource.$trigger('dl-' + config.model + '.update', error);
 
             defer.reject(error);
           });
