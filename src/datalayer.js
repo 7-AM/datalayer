@@ -305,9 +305,9 @@
           defer.reject({error: 'Expecting id for the operation'});
         }
 
-        var regex = new RegExp('\/[0-9]+$');
         var data = angular.copy(params);
         var parseUrl, operation = data.operation;
+        var regex = new RegExp('\/[0-9]+\/' + operation + '$');
 
         delete data.id;
         delete data.operation;
@@ -315,23 +315,12 @@
         config.request.update.data = data;
 
         if ( !regex.test(config.request.update.url) ) {
+            console.log('Didnt pass regex');
             config.request.update.url += '/' + params.id;
 
             if (operation) {
               config.request.update.url += '/' + operation;
             }
-        } else {
-          parseUrl = config.request.update.url.split('/');
-
-          if (parseUrl[parseUrl.length-1] !== params.id ) {
-            parseUrl[parseUrl.length-1] = params.id;
-
-            config.request.update.url = parseUrl.join('/');
-
-            if (operation) {
-              config.request.update.url += '/' + operation;
-            }
-          }
         }
 
         if (conf) {
