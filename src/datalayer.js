@@ -299,6 +299,7 @@
 
       Resource.update = function(params, conf) {
         var defer = $q.defer();
+        var url;
 
         if (params && !params.id) {
           defer.reject({error: 'Expecting id for the operation'});
@@ -306,20 +307,30 @@
 
         var regex = new RegExp('\/[0-9]+$');
         var data = angular.copy(params);
+        var parseUrl, operation = data.operation;
+
         delete data.id;
+        delete data.operation;
 
         config.request.update.data = data;
 
         if ( !regex.test(config.request.update.url) ) {
             config.request.update.url += '/' + params.id;
+
+            if (operation) {
+              config.request.update.url += '/' + operation;
+            }
         } else {
+          parseUrl = config.request.update.url.split('/');
 
-          url = config.request.update.url.split('/');
+          if (parseUrl[parseUrl.length-1] !== params.id ) {
+            parseUrl[parseUrl.length-1] = params.id;
 
-          if (url[url.length-1] !== params.id ) {
-            url[url.length-1] = params.id;
+            config.request.update.url = parseUrl.join('/');
 
-            config.request.update.url = url.join('/');
+            if (operation) {
+              config.request.update.url += '/' + operation;
+            }
           }
         }
 
