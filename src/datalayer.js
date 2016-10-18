@@ -299,35 +299,32 @@
 
       Resource.update = function(params, conf) {
         var defer = $q.defer();
-        var url;
+        var url, request = angular.copy(config.request.update);
 
         if (params && !params.id) {
           defer.reject({error: 'Expecting id for the operation'});
         }
 
         var data = angular.copy(params);
-        var parseUrl, operation = data.operation;
-        var regex = new RegExp('\/[0-9]+\/' + operation + '$');
+        var parseUrl, operation = params.operation;
 
         delete data.id;
         delete data.operation;
 
-        config.request.update.data = data;
+        request.data = data;
 
-        if ( !regex.test(config.request.update.url) ) {
-            console.log('Didnt pass regex');
-            config.request.update.url += '/' + params.id;
+        request.url += '/' + params.id;
 
-            if (operation) {
-              config.request.update.url += '/' + operation;
-            }
+        if (operation) {
+          request.url += '/' + operation;
         }
+
 
         if (conf) {
-          angular.extend(config.request.update, conf);
+          angular.extend(request, conf);
         }
 
-        $http( config.request.update )
+        $http( request )
           .then(function(data) {
             Resource.$trigger('dl-update', data);
             Resource.$trigger('dl-' + config.model + '.update', data);
