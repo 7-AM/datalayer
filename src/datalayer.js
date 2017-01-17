@@ -253,35 +253,19 @@
 
       Resource.delete = function(params, conf) {
         var defer = $q.defer();
+        var request = angular.copy(config.request.delete);
 
         if (params && !params.id) {
           defer.reject({error: 'Expecting id for the operation'});
         }
 
-        // config.request.delete.url += '/' + params.id;
-
-        regex = new RegExp('\/[0-9]+$');
-
-        if ( !regex.test(config.request.delete.url) ) {
-            config.request.delete.url += '/' + params.id;
-        } else {
-
-          url = config.request.delete.url.split('/');
-
-          if (url[url.length-1] !== params.id ) {
-            url[url.length-1] = params.id;
-
-            config.request.delete.url = url.join('/');
-          }
-
-        }
+        request.url += '/' + params.id;
 
         if (conf) {
-          angular.extend(config.request.delete, conf);
+          angular.extend(request, conf);
         }
 
-        // $http.delete(config.url + config.version + '/' + config.model + '/', params.id)
-        $http( config.request.delete )
+        $http( request )
           .then(function(data) {
             Resource.$trigger('dl-delete', data);
             Resource.$trigger('dl-' + config.model + '.delete', data);
