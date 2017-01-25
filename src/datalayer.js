@@ -76,7 +76,7 @@
             $http( config.request.$save )
               .then(function(result) {
                 // self.id = result.data;
-                angular.extend(self, result);
+                angular.extend(self, result.data || {});
 
                 Resource.$trigger('dl-save', self);
                 Resource.$trigger('dl-' + config.model + '.save', self);
