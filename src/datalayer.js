@@ -64,7 +64,8 @@
       Resource.prototype = {
         $save: function(conf) {
           var defer = $q.defer();
-          var self = this, regex, url;
+          var self = this;
+          var updateRequest = angular.copy(config.request.$update);
 
           if (!this[config.id_reference]) {
             config.request.$save.data = this;
@@ -91,30 +92,14 @@
 
           }
           else {
-            regex = new RegExp('\/[0-9]+$');
-
-            config.request.$update.data = this;
-
-            if ( !regex.test(config.request.$update.url) ) {
-                config.request.$update.url += '/' + this.id;
-            } else {
-
-              url = config.request.$update.url.split('/');
-
-              if (url[url.length-1] !== this.id ) {
-                url[url.length-1] = this.id;
-
-                config.request.$update.url = url.join('/');
-              }
-
-            }
-
+            updateRequest.data = this;
+            updateRequest.url += '/' + this.id;
 
             if (conf) {
-              angular.extend(config.request.$update, conf);
+              angular.extend(updateRequest, conf);
             }
 
-            $http( config.request.$update )
+            $http( updateRequest )
               .then(function(data) {
                 Resource.$trigger('dl-save', self);
                 Resource.$trigger('dl-' + config.model + '.save', self);
