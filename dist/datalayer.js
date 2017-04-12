@@ -153,7 +153,7 @@
         var defer = $q.defer();
         var promises = [];
         var data = [];
-        var _config = {}, regex;
+        var getRequest = {}, regex;
 
         if (!params.id) {
           defer.reject('Expecting id for the operation');
@@ -161,40 +161,26 @@
 
         if (checkType(params.id) === 'array'){
           angular.forEach(params.id, function (id) {
-            _config = angular.copy(config.request.get);
-            _config.url += '/' + id;
+            getRequest = angular.copy(config.request.get);
+            getRequest.url += '/' + id;
 
             if (conf) {
-              anguar.extend(_config, conf);
+              anguar.extend(getRequest, conf);
             }
 
-            promises.push( $http(_config) );
+            promises.push( $http(getRequest) );
           });
-        }
-        else {
+        } else {
 
-          regex = new RegExp('\/[0-9]+$');
-
-          if ( !regex.test(config.request.get.url) ) {
-              config.request.get.url += '/' + params.id;
-          } else {
-
-            url = config.request.get.url.split('/');
-
-            if (url[url.length-1] !== params.id ) {
-              url[url.length-1] = params.id;
-
-              config.request.get.url = url.join('/');
-            }
-
-          }
+          getRequest = angular.copy(config.request.get);
+          getRequest.url += '/' + id;
 
 
           if (conf) {
-            anguar.extend(config.request.get, conf);
+            anguar.extend(getRequest, conf);
           }
 
-          promises.push( $http( config.request.get ) );
+          promises.push( $http( getRequest ) );
         }
 
         $q.all(promises)
