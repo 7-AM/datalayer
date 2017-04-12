@@ -173,8 +173,7 @@
         } else {
 
           getRequest = angular.copy(config.request.get);
-          getRequest.url += '/' + id;
-
+          getRequest.url += '/' + params.id;
 
           if (conf) {
             anguar.extend(getRequest, conf);
