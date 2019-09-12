@@ -64,7 +64,8 @@
       Resource.prototype = {
         $save: function(conf) {
           var defer = $q.defer();
-          var self = this, regex, url;
+          var self = this;
+          var updateRequest = angular.copy(config.request.$update);
 
           if (!this[config.id_reference]) {
             config.request.$save.data = this;
@@ -75,7 +76,8 @@
 
             $http( config.request.$save )
               .then(function(result) {
-                self.id = result.data;
+                // self.id = result.data;
+                angular.extend(self, result.data || {});
 
                 Resource.$trigger('dl-save', self);
                 Resource.$trigger('dl-' + config.model + '.save', self);
@@ -90,30 +92,14 @@
 
           }
           else {
-            regex = new RegExp('\/[0-9]+$');
-
-            config.request.$update.data = this;
-
-            if ( !regex.test(config.request.$update.url) ) {
-                config.request.$update.url += '/' + this.id;
-            } else {
-
-              url = config.request.$update.url.split('/');
-
-              if (url[url.length-1] !== this.id ) {
-                url[url.length-1] = this.id;
-
-                config.request.$update.url = url.join('/');
-              }
-
-            }
-
+            updateRequest.data = this;
+            updateRequest.url += '/' + this.id;
 
             if (conf) {
-              angular.extend(config.request.$update, conf);
+              angular.extend(updateRequest, conf);
             }
 
-            $http( config.request.$update )
+            $http( updateRequest )
               .then(function(data) {
                 Resource.$trigger('dl-save', self);
                 Resource.$trigger('dl-' + config.model + '.save', self);
@@ -167,7 +153,7 @@
         var defer = $q.defer();
         var promises = [];
         var data = [];
-        var _config = {}, regex;
+        var getRequest = {}, regex;
 
         if (!params.id) {
           defer.reject('Expecting id for the operation');
@@ -175,40 +161,25 @@
 
         if (checkType(params.id) === 'array'){
           angular.forEach(params.id, function (id) {
-            _config = angular.copy(config.request.get);
-            _config.url += '/' + id;
+            getRequest = angular.copy(config.request.get);
+            getRequest.url += '/' + id;
 
             if (conf) {
-              anguar.extend(_config, conf);
+              anguar.extend(getRequest, conf);
             }
 
-            promises.push( $http(_config) );
+            promises.push( $http(getRequest) );
           });
-        }
-        else {
+        } else {
 
-          regex = new RegExp('\/[0-9]+$');
-
-          if ( !regex.test(config.request.get.url) ) {
-              config.request.get.url += '/' + params.id;
-          } else {
-
-            url = config.request.get.url.split('/');
-
-            if (url[url.length-1] !== params.id ) {
-              url[url.length-1] = params.id;
-
-              config.request.get.url = url.join('/');
-            }
-
-          }
-
+          getRequest = angular.copy(config.request.get);
+          getRequest.url += '/' + params.id;
 
           if (conf) {
-            anguar.extend(config.request.get, conf);
+            anguar.extend(getRequest, conf);
           }
 
-          promises.push( $http( config.request.get ) );
+          promises.push( $http( getRequest ) );
         }
 
         $q.all(promises)
